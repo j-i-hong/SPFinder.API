@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.InMemory.ValueGeneration.Internal;
 using SPFinder.API.Domain.Models;
@@ -15,18 +16,28 @@ namespace SPFinder.API.Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            //DbContextOptionsBuilder builderOption = new DbContextOptionsBuilder();
+            //builderOption.EnableSensitiveDataLogging();
 
+            base.OnModelCreating(builder);
+            
             builder.Entity<Company>().ToTable("Company");
             builder.Entity<Company>().HasKey(p => p.Id);
             builder.Entity<Company>().Property(p => p.Id).IsRequired().ValueGeneratedOnAdd().HasValueGenerator<InMemoryIntegerValueGenerator<Guid>>();
             builder.Entity<Company>().Property(p => p.Name).IsRequired().HasMaxLength(255);
             builder.Entity<Company>().HasMany(p => p.CompanyCertifications).WithOne(p => p.Company).HasForeignKey(p => p.CompanyId);
 
-            Company company1 = new Company { Id = new Guid("68637CD3-9680-4EAF-A7BE-4D23AF39B171"), Name = "Acme" };
-            Company company2 = new Company { Id = new Guid("91810C67-738E-4B8D-95F0-5BEC4F58120D"), Name = "Amazon" };
 
-            builder.Entity<Company>().HasData(company1, company2);
+            Guid companyId1 = new Guid("68637CD3-9680-4EAF-A7BE-4D23AF39B171");
+            Guid companyId2 = new Guid("91810C67-738E-4B8D-95F0-5BEC4F58120D");
+
+            List<Company> companyList = new List<Company>
+            {
+                new Company { Id = companyId1, Name = "1WorldSync", Tier = Tier.Gold,  ShortDescription = @"1WorldSync™ is the leading provider of product content solutions. Enabling more than 25,000 global companies in over 60 countries to share authentic, trusted content with customers and consumers."},
+                new Company { Id = companyId2, Name = "1WorldSync", Tier = Tier.Silver, ShortDescription = @"Markem-Imaje is a trusted world manufacturer of product identification and traceability solutions, offering a full line of reliable and innovative inkjet, thermal transfer, laser, print and apply label systems and track and trace software." },
+            };
+
+            builder.Entity<Company>().HasData(companyList);
 
             Certification cert1 = new Certification { Id = 1, Description = "Gold certification", ImageLink = "111" };
             Certification cert2 = new Certification { Id = 2, Description = "Silver certification", ImageLink = "222" };
@@ -38,9 +49,9 @@ namespace SPFinder.API.Persistence.Contexts
 
             builder.Entity<CompanyCertification>().HasData
             (
-                new CompanyCertification { Id = 1, CompanyId = company1.Id, Description = cert1.Description, ImageLink = cert1.ImageLink},
-                new CompanyCertification { Id = 2, CompanyId = company2.Id, Description = cert2.Description, ImageLink = cert2.ImageLink },
-                new CompanyCertification { Id = 3, CompanyId = company2.Id, Description = cert3.Description, ImageLink = cert3.ImageLink }
+                new CompanyCertification { Id = 1, CompanyId = companyId1, Description = cert1.Description, ImageLink = cert1.ImageLink},
+                new CompanyCertification { Id = 2, CompanyId = companyId2, Description = cert2.Description, ImageLink = cert2.ImageLink },
+                new CompanyCertification { Id = 3, CompanyId = companyId2, Description = cert3.Description, ImageLink = cert3.ImageLink }
             );
         }
     }

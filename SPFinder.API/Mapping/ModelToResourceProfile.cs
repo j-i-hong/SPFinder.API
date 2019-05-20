@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SPFinder.API.Domain.Models;
+using SPFinder.API.Extensions;
 using SPFinder.API.Resources;
 
 namespace SPFinder.API.Mapping
@@ -8,7 +9,9 @@ namespace SPFinder.API.Mapping
     {
         public ModelToResourceProfile()
         {
-            CreateMap<Company, CompanyResource>();
+            CreateMap<Company, CompanyResource>()
+                .ForMember(src => src.TierString, opt => opt.MapFrom(src => src.Tier.ToDescriptionString()));
+
             CreateMap<UIComponent, UIComponentResource>();
         }
     }

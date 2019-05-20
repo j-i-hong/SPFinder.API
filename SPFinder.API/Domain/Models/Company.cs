@@ -7,11 +7,12 @@ namespace SPFinder.API.Domain.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-
+        public string ShortDescription { get; set; }
         public string AccountNumber { get; set; }
         public bool IsActive { get; set; }
         public ProviderStatus ProviderStatus { get; set; }
 
+        public Tier Tier { get; set; }
         public IList<CompanyCertification> CompanyCertifications { get; set; } = new List<CompanyCertification>();
     }
 }
